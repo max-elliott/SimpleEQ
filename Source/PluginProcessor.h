@@ -95,6 +95,10 @@ private:
     template<typename ChainType, typename CoefficientType>
     void updateCutFilter(ChainType &chain, const CoefficientType &cutCoefficients, const Slope &slope);
     
+    void updateLowCutFilter(const ChainSettings &chainSettings);
+    void updateHighCutFilter(const ChainSettings &chainSettings);
+    void updateFilters();
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
 };
