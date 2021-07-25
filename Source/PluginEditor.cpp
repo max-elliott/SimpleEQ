@@ -131,6 +131,7 @@ void SimpleEQAudioProcessorEditor::parameterValueChanged(int parameterIndex, flo
 void SimpleEQAudioProcessorEditor::timerCallback(){
     if(parametersChanged.compareAndSetBool(false, true)){
         // update the monochain
+//        audioProcessor.
         
         //signal repaint
     }
