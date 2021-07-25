@@ -42,7 +42,17 @@ void updateCoefficients(Coefficients &old, const Coefficients &replacements);
 
 Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate);
 
+template<int Index, typename ChainType, typename CoefficientType> void update(ChainType &chain, const CoefficientType &cutCoefficients);
+template<typename ChainType, typename CoefficientType>
+void updateCutFilter(ChainType &chain, const CoefficientType &cutCoefficients, const Slope &slope);
 
+inline auto makeLowCutFilter(const ChainSettings& chainSettings, double sampleRate){
+    return juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.lowCutFreq, sampleRate, (chainSettings.lowCutSlope + 1)*2);
+}
+
+inline auto makeHighCutFilter(const ChainSettings& chainSettings, double sampleRate){
+    return juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.highCutFreq, sampleRate, (chainSettings.highCutSlope + 1)*2);
+}
 //==============================================================================
 /**
 */
@@ -94,13 +104,10 @@ private:
     MonoChain leftChain, rightChain;
     
     void updatePeakFilter(const ChainSettings &chainSettings);
-    
-    template<int Index, typename ChainType, typename CoefficientType> void update(ChainType &chain, const CoefficientType &cutCoefficients);
-    template<typename ChainType, typename CoefficientType>
-    void updateCutFilter(ChainType &chain, const CoefficientType &cutCoefficients, const Slope &slope);
-    
+
     void updateLowCutFilter(const ChainSettings &chainSettings);
     void updateHighCutFilter(const ChainSettings &chainSettings);
+    
     void updateFilters();
     
     //==============================================================================
