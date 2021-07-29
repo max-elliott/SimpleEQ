@@ -9,6 +9,63 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+void LookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider & slider){
+    using namespace juce;
+    
+    auto bounds = Rectangle<float>(x, y, width, height);
+    
+    float currentAngle = rotaryStartAngle + (rotaryEndAngle - rotaryStartAngle) * sliderPosProportional;
+    
+    g.setColour(Colour(97u, 18u, 167u));
+    g.fillEllipse(bounds);
+    
+    g.setColour(Colour(255u, 154u, 1u));
+    g.drawEllipse(bounds, 1.f);
+    
+    Path p;
+    
+    auto centre = bounds.getCentre();
+    Rectangle<float> r;
+    r.setLeft(centre.getX() - 2);
+    r.setRight(centre.getX() + 2);
+    r.setTop(bounds.getY());
+    r.setBottom(centre.getY());
+    p.addRectangle(r);
+    
+    p.applyTransform(AffineTransform().rotated(currentAngle, centre.getX(), centre.getY()));
+    
+    g.fillPath(p);
+}
+
+void RotarySliderWithLabels::paint(juce::Graphics &g){
+    using namespace juce;
+    
+    auto startAngle = degreesToRadians(180.f + 45.f);
+    auto endAngle = degreesToRadians(360.f + 180.f - 45.f);
+    
+    auto range = getRange();
+    
+    auto sliderBounds = getSliderBounds();
+    
+    getLookAndFeel().drawRotarySlider(g,
+                                      sliderBounds.getX(),
+                                      sliderBounds.getY(),
+                                      sliderBounds.getWidth(),
+                                      sliderBounds.getHeight(),
+                                      jmap(getValue(),
+                                           range.getStart(),
+                                           range.getEnd(),
+                                           0.0,
+                                           1.0),
+                                      startAngle,
+                                      endAngle,
+                                      *this);
+}
+
+juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const{
+    return getLocalBounds();
+}
+
 
 ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p):
 audioProcessor(p){
