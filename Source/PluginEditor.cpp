@@ -63,7 +63,13 @@ void RotarySliderWithLabels::paint(juce::Graphics &g){
 }
 
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const{
-    return getLocalBounds();
+    auto bounds = getLocalBounds();
+    auto size = juce::jmin(bounds.getWidth(), bounds.getHeight());
+    size -= 2. * getTextHeight();
+    juce::Rectangle<int> r;
+    r.setSize(size, size);
+    r.setCentre(bounds.getCentre().getX(), bounds.getCentre().getY());
+    return r;
 }
 
 
